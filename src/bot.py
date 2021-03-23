@@ -1,3 +1,5 @@
+from logic import possible_moves_black, possible_moves_white
+
 
 # Heuristic that considers the amount of adjacent pieces of a given player and the same for the other player, subtracting them
 def adjacentHeuristic(pieces, player):
@@ -55,3 +57,40 @@ def isAdjacent(piece1, piece2):
     if( (piece1[0] - 1 == piece2[0]) and (piece1[1] + 1 == piece2[1]) ):
         return True
     return False
+
+def choose_move_adjacent(pieces, player):
+    
+    if (player == 1):
+        possible_moves = possible_moves_black(pieces)
+        score = -4 # Worse possible score
+        indexMove = 0
+
+        for i in range(len(possible_moves) - 1):
+            tempArray = pieces[:] # Copy by value
+            index = tempArray.index(possible_moves[i][0])
+            tempArray[index] = possible_moves[i][1]
+            tempScore = adjacentHeuristic(tempArray, 1)
+            if (tempScore > score):
+                score = tempScore
+                indexMove = i
+            if (score == 3): # Best possible score
+                break
+        pieces[pieces.index(possible_moves[indexMove][0])] = possible_moves[indexMove][1]
+    else:
+        possible_moves = possible_moves_white(pieces)
+        score = -4 # Worse possible score
+        indexMove = 0
+
+        for i in range(len(possible_moves) - 1):
+            tempArray = pieces[:]
+            index = tempArray.index(possible_moves[i][0])
+            tempArray[index] = possible_moves[i][1]
+            tempScore = adjacentHeuristic(tempArray, 2)
+            if (tempScore > score):
+                score = tempScore
+                indexMove = i
+            if (score == 3): # Best possible score
+                break
+        pieces[pieces.index(possible_moves[indexMove][0])] = possible_moves[indexMove][1]
+
+    return pieces.index(possible_moves[indexMove][1])

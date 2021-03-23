@@ -131,10 +131,10 @@ def move(pieces, piece_chosen, tile_chosen):
         if(piece_chosen == pieces[i]):
             pieces[i] = tile_chosen
 
+# Last_piece is the index of the last played piece
 def gameOver(pieces, last_piece):
     if(last_piece >= 3):
         return (checkLine("white", pieces, last_piece) or checkDiagonals("white", pieces, last_piece) or checkColumn("white", pieces, last_piece))
-
     else:
         return (checkLine("black", pieces, last_piece) or checkDiagonals("black", pieces, last_piece) or checkColumn("black", pieces, last_piece))
         
@@ -146,7 +146,6 @@ def checkLine(color, pieces, last_piece):
     if(color == "black"):
         if ((pieces[last_piece][0] + 1, pieces[last_piece][1]) in black_array):
             if((pieces[last_piece][0] + 2, pieces[last_piece][1]) in black_array):
-                
                 return True
             if((pieces[last_piece][0] - 1, pieces[last_piece][1]) in black_array):
                 return True
@@ -156,8 +155,7 @@ def checkLine(color, pieces, last_piece):
         return False
     else:
         if ((pieces[last_piece][0] + 1, pieces[last_piece][1]) in white_array):
-            if((pieces[last_piece][0] + 2, pieces[last_piece][1]) in white_array):
-                
+            if((pieces[last_piece][0] + 2, pieces[last_piece][1]) in white_array): 
                 return True
             if((pieces[last_piece][0] - 1, pieces[last_piece][1]) in white_array):
                 return True
@@ -172,8 +170,7 @@ def checkColumn(color, pieces, last_piece):
 
     if(color == "black"):
         if ((pieces[last_piece][0], pieces[last_piece][1] + 1) in black_array):
-            if((pieces[last_piece][0], pieces[last_piece][1] + 2) in black_array):
-                
+            if((pieces[last_piece][0], pieces[last_piece][1] + 2) in black_array):  
                 return True
             if((pieces[last_piece][0], pieces[last_piece][1] - 1) in black_array):
                 return True
@@ -184,7 +181,6 @@ def checkColumn(color, pieces, last_piece):
     else:
         if ((pieces[last_piece][0], pieces[last_piece][1] + 1) in white_array):
             if((pieces[last_piece][0], pieces[last_piece][1] + 2) in white_array):
-                
                 return True
             if((pieces[last_piece][0], pieces[last_piece][1] - 1) in white_array):
                 return True

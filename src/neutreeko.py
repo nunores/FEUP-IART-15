@@ -1,6 +1,22 @@
 from display import *
 from logic import *
 from bot import *
+import time
+
+def botvsbot(pieces):
+    last_piece = -1
+    player = 1
+    while not gameOver(pieces, last_piece):
+        printBoard(pieces, player)
+
+        #print(pieces)
+        
+        last_piece = choose_move_adjacent(pieces, player)
+
+        time.sleep(5)
+
+        player = playerUpdate(player)
+
 
 def main(pieces):
 
@@ -62,7 +78,8 @@ def main(pieces):
 
 
 
-main([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)])
+#main([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)])
+botvsbot([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)])
 
 #print(possible_moves_white([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)]))
 

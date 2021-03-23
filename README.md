@@ -5,3 +5,5 @@
 - Draw
 
 - Upgrade visually
+
+- Botvsbot final play not playing

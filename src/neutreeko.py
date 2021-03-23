@@ -184,29 +184,155 @@ def move(pieces, piece_chosen, tile_chosen):
         if(piece_chosen == pieces[i]):
             pieces[i] = tile_chosen
     
-    
-def gameLoop(pieces, player):
 
+def gameOver(pieces, last_piece):
+    if(last_piece >= 3):
+        return (checkLine("white", pieces, last_piece) or checkDiagonals("white", pieces, last_piece) or checkColumn("white", pieces, last_piece))
+
+    else:
+        return (checkLine("black", pieces, last_piece) or checkDiagonals("black", pieces, last_piece) or checkColumn("black", pieces, last_piece))
+        
+
+def checkLine(color, pieces, last_piece):
+    black_array = pieces[:3]
+    white_array = pieces[3:6]
+
+    if(color == "black"):
+        if ((pieces[last_piece][0] + 1, pieces[last_piece][1]) in black_array):
+            if((pieces[last_piece][0] + 2, pieces[last_piece][1]) in black_array):
+                
+                return True
+            if((pieces[last_piece][0] - 1, pieces[last_piece][1]) in black_array):
+                return True
+        if ((pieces[last_piece][0] - 1, pieces[last_piece][1]) in black_array):
+            if((pieces[last_piece][0] - 2, pieces[last_piece][1]) in black_array):
+                return True
+        return False
+    else:
+        if ((pieces[last_piece][0] + 1, pieces[last_piece][1]) in white_array):
+            if((pieces[last_piece][0] + 2, pieces[last_piece][1]) in white_array):
+                
+                return True
+            if((pieces[last_piece][0] - 1, pieces[last_piece][1]) in white_array):
+                return True
+        if ((pieces[last_piece][0] - 1, pieces[last_piece][1]) in white_array):
+            if((pieces[last_piece][0] - 2, pieces[last_piece][1]) in white_array):
+                return True
+        return False
+
+def checkColumn(color, pieces, last_piece):
+    black_array = pieces[:3]
+    white_array = pieces[3:6]
+
+    if(color == "black"):
+        if ((pieces[last_piece][0], pieces[last_piece][1] + 1) in black_array):
+            if((pieces[last_piece][0], pieces[last_piece][1] + 2) in black_array):
+                
+                return True
+            if((pieces[last_piece][0], pieces[last_piece][1] - 1) in black_array):
+                return True
+        if ((pieces[last_piece][0], pieces[last_piece][1] - 1) in black_array):
+            if((pieces[last_piece][0], pieces[last_piece][1] - 2) in black_array):
+                return True
+        return False
+    else:
+        if ((pieces[last_piece][0], pieces[last_piece][1] + 1) in white_array):
+            if((pieces[last_piece][0], pieces[last_piece][1] + 2) in white_array):
+                
+                return True
+            if((pieces[last_piece][0], pieces[last_piece][1] - 1) in white_array):
+                return True
+        if ((pieces[last_piece][0], pieces[last_piece][1] - 1) in white_array):
+            if((pieces[last_piece][0], pieces[last_piece][1] - 2) in white_array):
+                return True
+        return False
+
+def checkDiagonals(color, pieces, last_piece):
+    black_array = pieces[:3]
+    white_array = pieces[3:6]
+
+    if(color == "black"):
+        if ((pieces[last_piece][0] + 1, pieces[last_piece][1] + 1) in black_array):
+            if((pieces[last_piece][0] + 2, pieces[last_piece][1] + 2) in black_array):
+                return True
+            if((pieces[last_piece][0] - 1, pieces[last_piece][1] - 1) in black_array):
+                return True
+        if ((pieces[last_piece][0] - 1, pieces[last_piece][1] - 1) in black_array):
+            if((pieces[last_piece][0] - 2, pieces[last_piece][1] - 2) in black_array):
+                return True     
+        if ((pieces[last_piece][0] - 1, pieces[last_piece][1] + 1) in black_array):
+            if((pieces[last_piece][0] - 2, pieces[last_piece][1] + 2) in black_array):
+                return True
+            if((pieces[last_piece][0] + 1, pieces[last_piece][1] - 1) in black_array):
+                return True
+        if ((pieces[last_piece][0] + 1, pieces[last_piece][1] - 1) in black_array):
+            if((pieces[last_piece][0] + 2, pieces[last_piece][1] - 2) in black_array):
+                return True
+        return False
+    else:
+        if ((pieces[last_piece][0] + 1, pieces[last_piece][1] + 1) in white_array):
+            if((pieces[last_piece][0] + 2, pieces[last_piece][1] + 2) in white_array):
+                return True
+            if((pieces[last_piece][0] - 1, pieces[last_piece][1] - 1) in white_array):
+                return True
+        if ((pieces[last_piece][0] - 1, pieces[last_piece][1] - 1) in white_array):
+            if((pieces[last_piece][0] - 2, pieces[last_piece][1] - 2) in white_array):
+                return True     
+        if ((pieces[last_piece][0] - 1, pieces[last_piece][1] + 1) in white_array):
+            if((pieces[last_piece][0] - 2, pieces[last_piece][1] + 2) in white_array):
+                return True
+            if((pieces[last_piece][0] + 1, pieces[last_piece][1] - 1) in white_array):
+                return True
+        if ((pieces[last_piece][0] + 1, pieces[last_piece][1] - 1) in white_array):
+            if((pieces[last_piece][0] + 2, pieces[last_piece][1] - 2) in white_array):
+                return True
+        return False
+
+
+def gameLoop(pieces):
+
+    player = 2
+    last_piece = -1
+
+    while not gameOver(pieces, last_piece):
+
+        printBoard(pieces, player)
+
+        # Choose what to move
+        piece_chosen = 0
+        while ((1 > piece_chosen) or (piece_chosen > 3)):
+            piece_chosen = int(input("Choose your piece: "))
+        if (player == 1):
+            last_piece = piece_chosen - 1
+            possible_moves = possible_moves_black(pieces)
+            final_moves = printPossibleMoves(pieces, possible_moves, pieces[piece_chosen-1])
+        else:
+            last_piece = piece_chosen + 2
+            possible_moves = possible_moves_white(pieces)
+            final_moves = printPossibleMoves(pieces, possible_moves, pieces[piece_chosen+2])
+
+            
+        
+
+        # Choose where to move
+        tile_chosen = 0
+        while ((1 > tile_chosen) or (tile_chosen > len(final_moves))):
+            tile_chosen = int(input("Choose the destination: "))
+        
+        if (player == 1):
+            move(pieces, pieces[piece_chosen - 1], final_moves[tile_chosen - 1])
+        else:
+            move(pieces, pieces[piece_chosen + 2], final_moves[tile_chosen - 1])
+
+        player = playerUpdate(player)
+    
     printBoard(pieces, player)
-
-    # Choose what to move
-    piece_chosen = 0
-    while ((1 > piece_chosen) or (piece_chosen > 3)):
-        piece_chosen = int(input("Choose your piece: "))
-    possible_moves = possible_moves_black(pieces)
-    final_moves = printPossibleMoves(pieces, possible_moves, pieces[piece_chosen-1])
-    
-    # Choose where to move
-    tile_chosen = 0
-    while ((1 > tile_chosen) or (tile_chosen > len(final_moves))):
-        tile_chosen = int(input("Choose the destination: "))
-    
-    move(pieces, pieces[piece_chosen - 1], final_moves[tile_chosen - 1])
-    printBoard(pieces, 2)
-    playerUpdate(player)
+    print("Winner: Player " + str(playerUpdate(player)))
 
 
-gameLoop([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)], 1)
+
+
+gameLoop([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)])
 
 
 

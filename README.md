@@ -2,7 +2,6 @@
 
 # TODO:
 
-- Piece can't move anywhere
 - Draw
 
 - Upgrade visually

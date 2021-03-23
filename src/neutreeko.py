@@ -301,7 +301,11 @@ def gameLoop(pieces):
         # Choose what to move
         piece_chosen = 0
         while ((1 > piece_chosen) or (piece_chosen > 3)):
-            piece_chosen = int(input("Choose your piece: "))
+            
+            try:
+                piece_chosen = int(input("Choose your piece: "))
+            except ValueError:
+                print("Input not valid")
         if (player == 1):
             last_piece = piece_chosen - 1
             possible_moves = possible_moves_black(pieces)
@@ -317,7 +321,10 @@ def gameLoop(pieces):
         # Choose where to move
         tile_chosen = 0
         while ((1 > tile_chosen) or (tile_chosen > len(final_moves))):
-            tile_chosen = int(input("Choose the destination: "))
+            try:
+                tile_chosen = int(input("Choose the destination: "))
+            except ValueError:
+                print("Input not valid")
         
         if (player == 1):
             move(pieces, pieces[piece_chosen - 1], final_moves[tile_chosen - 1])

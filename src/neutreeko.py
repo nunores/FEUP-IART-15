@@ -14,14 +14,18 @@ def main(pieces):
         # Choose what to move
         piece_chosen = 0
         while ((1 > piece_chosen) or (piece_chosen > 3)):
-            piece_chosen = int(input("Choose your piece: "))
-            if (player == 1 and not possibleMovesPiece(pieces, possible_moves_black(pieces), pieces[piece_chosen - 1])):
-                piece_chosen = -1
-                print("That black piece cannot be moved")
-            elif (player == 2 and not possibleMovesPiece(pieces, possible_moves_white(pieces), pieces[piece_chosen + 2])):
-                piece_chosen = -1
-                print("That white piece cannot be moved")
-    
+            try:
+                piece_chosen = int(input("Choose your piece: "))
+            except ValueError:
+                print("Input not valid")
+
+        if (player == 1 and not possibleMovesPiece(pieces, possible_moves_black(pieces), pieces[piece_chosen - 1])):
+            piece_chosen = -1
+            print("That black piece cannot be moved")
+        elif (player == 2 and not possibleMovesPiece(pieces, possible_moves_white(pieces), pieces[piece_chosen + 2])):
+            piece_chosen = -1
+            print("That white piece cannot be moved")
+            
         if (player == 1):
             last_piece = piece_chosen - 1
             possible_moves = possible_moves_black(pieces)
@@ -37,7 +41,10 @@ def main(pieces):
         # Choose where to move
         tile_chosen = 0
         while ((1 > tile_chosen) or (tile_chosen > len(final_moves))):
-            tile_chosen = int(input("Choose the destination: "))
+            try:
+                tile_chosen = int(input("Choose the destination: "))
+            except ValueError:
+                print("Input not valid")
         
         if (player == 1):
             move(pieces, pieces[piece_chosen - 1], final_moves[tile_chosen - 1])

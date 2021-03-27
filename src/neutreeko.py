@@ -13,7 +13,7 @@ def botvsbot(pieces):
         
         last_piece = choose_move_adjacent(pieces, player)
 
-        time.sleep(5)
+        time.sleep(1)
 
         player = playerUpdate(player)
 
@@ -79,7 +79,16 @@ def main(pieces):
 
 
 #main([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)])
-botvsbot([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)])
+#botvsbot([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)])
+
+#print(len(possible_moves_black([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)])))
+
+root = Node([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)], 0)
+root.addChildren(3, 1)
+root.printTree(0)
+
+
+#print(getNumAdjacents([(2, 1), (4, 1), (3, 4), (1, 4), (2, 5), (3, 5)], 2))
 
 #print(possible_moves_white([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)]))
 

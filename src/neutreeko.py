@@ -1,3 +1,5 @@
+import main_menu as main
+
 # Returns list with original position and possible end positions in every direction for every black piece
 def possible_moves_black(pieces):
     result = []
@@ -290,6 +292,8 @@ def checkDiagonals(color, pieces, last_piece):
 
 
 def gameLoop(pieces):
+
+    main.main_menu()
 
     player = 2
     last_piece = -1

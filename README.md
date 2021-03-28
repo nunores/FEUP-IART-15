@@ -2,7 +2,8 @@
 
 # TODO:
 
-- Piece can't move anywhere
 - Draw
 
 - Upgrade visually
+
+- Botvsbot final play not playing

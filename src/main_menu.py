@@ -4,10 +4,12 @@ sys.tracebacklimit=0
 
 
 def main_menu():
-    main_menu = True
+    global main_menu_state 
+    main_menu_state = True
     current_difficulty = "Medium"
+    game_type = 0
 
-    while(main_menu):
+    while(main_menu_state):
         print("\n\n\n\n\n\n\n\n\n\n")
         print("Current Difficulty: " + current_difficulty)
         print("[1] Play")
@@ -16,7 +18,8 @@ def main_menu():
         try:
             option1 = int(input("Choose the destination: "))
             if(option1 == 1):
-                main_menu = False
+                choose_type()
+                main_menu_state = False
             elif(option1 == 2):
                 current_difficulty = difficulty()
             elif(option1 == 3):
@@ -26,6 +29,26 @@ def main_menu():
             print("Input not valid, try again...")
     
     
+def choose_type():
+    print("\n\n\n\n\n\n\n\n\n\n")
+        
+    print("[1] Human vs Human")
+    print("[2] Human vs PC")
+    print("[3] PC vs PC")
+    try:
+        option1 = int(input("Choose the destination: "))
+        if(option1 == 1):
+            return 1
+        elif(option1 == 2): 
+            return 2
+        elif(option1 == 3): 
+            return 3
+        
+            
+    except ValueError:
+        print("Input not valid, try again...")
+
+
 def difficulty():
     difficulty_menu = True
 
@@ -51,3 +74,4 @@ def difficulty():
             print("\n\n\n Input not valid, try again...")
     
 
+main_menu()

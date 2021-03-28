@@ -17,7 +17,8 @@ def botvsbot(pieces):
 
 def main(pieces):
 
-    main.main_menu()
+
+    
     player = 1
     last_piece = -1
 

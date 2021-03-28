@@ -1,16 +1,54 @@
-from logic import possible_moves_black, possible_moves_white, gameOver, playerUpdate
+from logic import possible_moves_black, possible_moves_white, gameOver, playerUpdate, getLastPieceIndex
 
 class Node:
     def __init__(self, state, score):
         self.children = []
         self.state = state
         self.score = score
+        
+
+    def getBestMove(self, player):
+        if (player == 1):
+            max = -1000
+            for i in range(len(self.children)):
+                (move, min) = self.children[i].getMin()
+                if (min > max):
+                    moveToPlay = move
+                    max = min
+            return (moveToPlay, max)
+        elif (player == 2):
+            min = 1000
+            for i in range(len(self.children)):
+                (move, max) = self.children[i].getMax()
+                if (max < min):
+                    moveToPlay = move
+                    min = max
+            return (moveToPlay, min)
 
     def getMax(self):
-        print("GetMax")
+        max = -1000
+        if(len(self.children) == 0):
+            return (self.state, self.score)
+        for i in range(len(self.children)):
+            min = self.children[i].getMin()[1]
+            if (min > max):
+                moveToPlay = self.state
+                max = min
+        return (moveToPlay, max)
+
 
     def getMin(self):
-        print("GetMin")
+        min = 1000
+        if(len(self.children) == 0):
+            return (self.state, self.score)
+        for i in range(len(self.children)):
+            max = self.children[i].getMax()[1]
+            if (max < min):
+                moveToPlay = self.state
+                min = max
+        return (moveToPlay, min)
+
+
  
     def addChildren(self, depth, player):
         depth -= 1
@@ -23,7 +61,7 @@ class Node:
                 tempArray = self.state[:]
                 index = tempArray.index(possible_moves[i][0])
                 tempArray[index] = possible_moves[i][1]
-                tempScore = adjacentHeuristic(tempArray)
+                tempScore = adjacentHeuristic(tempArray) # TODO
                 if (gameOver(tempArray, index)):
                     if (player == 1):
                         tempScore = 999
@@ -43,6 +81,7 @@ class Node:
     def printTree(self, spaces):
         for n in range(spaces):
             print("   ", end = "")
+        print(self.state)
         print(str(self.score))
         for i in range(len(self.children)):
             self.children[i].printTree(spaces + 1)
@@ -150,3 +189,17 @@ def choose_move_adjacent(pieces, player):
 
     print(score)
     return pieces.index(possible_moves[indexMove][1])
+
+def choose_move_minimax(pieces, depth, heuristic, player):
+
+    tempPieces = pieces[:]
+
+    root = Node(pieces, heuristic(pieces))
+    #print(root)
+    root.addChildren(depth, player)
+
+    pieces = root.getBestMove(player)[0]
+
+    return (pieces, getLastPieceIndex(tempPieces, pieces))
+
+  

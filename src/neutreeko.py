@@ -8,12 +8,9 @@ def botvsbot(pieces):
     player = 1
     while not gameOver(pieces, last_piece):
         printBoard(pieces, player)
-
-        #print(pieces)
         
-        last_piece = choose_move_adjacent(pieces, player)
+        (pieces, last_piece) = choose_move_minimax(pieces, 6, adjacentHeuristic, player)
 
-        time.sleep(1)
 
         player = playerUpdate(player)
 
@@ -51,9 +48,6 @@ def main(pieces):
             possible_moves = possible_moves_white(pieces)
             final_moves = printPossibleMoves(pieces, possible_moves, pieces[piece_chosen+2])
 
-            
-        
-
         # Choose where to move
         tile_chosen = 0
         while ((1 > tile_chosen) or (tile_chosen > len(final_moves))):
@@ -67,7 +61,7 @@ def main(pieces):
         else:
             move(pieces, pieces[piece_chosen + 2], final_moves[tile_chosen - 1])
 
-        print(adjacentHeuristic(pieces, player))
+        print(adjacentHeuristic(pieces))
 
         player = playerUpdate(player)
 
@@ -79,13 +73,14 @@ def main(pieces):
 
 
 #main([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)])
-#botvsbot([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)])
+botvsbot([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)])
 
 #print(len(possible_moves_black([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)])))
 
-root = Node([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)], 0)
-root.addChildren(3, 1)
-root.printTree(0)
+#root = Node([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)], adjacentHeuristic([(3, 1), (4, 1), (4, 2), (1, 4), (2, 5), (4, 5)]))
+#root.addChildren(3, 1)
+#root.printTree(0)
+#print(str(root.getBestMove(1)))
 
 
 #print(getNumAdjacents([(2, 1), (4, 1), (3, 4), (1, 4), (2, 5), (3, 5)], 2))

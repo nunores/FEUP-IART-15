@@ -229,4 +229,10 @@ def checkDiagonals(color, pieces, last_piece):
             if((pieces[last_piece][0] + 2, pieces[last_piece][1] - 2) in white_array):
                 return True
         return False
+
+def getLastPieceIndex(array1, array2):
+    for i in range(len(array1)):
+        if (array1[i] != array2[i]):
+            return i
+    return -1 # Arrays are equal
     

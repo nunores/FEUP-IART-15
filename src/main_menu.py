@@ -1,15 +1,13 @@
 import sys
+from enum import Enum
+
 sys.tracebacklimit=0
 
-
-
 def main_menu():
-    global main_menu_state 
-    main_menu_state = True
+    game_type = "N/A"
     current_difficulty = "Medium"
-    game_type = 0
 
-    while(main_menu_state):
+    while(True):
         print("\n\n\n\n\n\n\n\n\n\n")
         print("Current Difficulty: " + current_difficulty)
         print("[1] Play")
@@ -18,12 +16,17 @@ def main_menu():
         try:
             option1 = int(input("Choose the destination: "))
             if(option1 == 1):
-                choose_type()
-                main_menu_state = False
+                game_type = choose_type()
+                if(game_type == "back"):
+                    continue
+                # TODO Chamar outros game modes
             elif(option1 == 2):
                 current_difficulty = difficulty()
+                if(current_difficulty == "back")
+                    continue
+                # TODO Chamar outros difficulties 
             elif(option1 == 3):
-                exit()
+                return
             
         except ValueError:
             print("Input not valid, try again...")
@@ -32,46 +35,45 @@ def main_menu():
 def choose_type():
     print("\n\n\n\n\n\n\n\n\n\n")
         
+    print("[0] Go Back")
     print("[1] Human vs Human")
     print("[2] Human vs PC")
     print("[3] PC vs PC")
+
     try:
         option1 = int(input("Choose the destination: "))
-        if(option1 == 1):
-            return 1
+        if(option1 == 0):
+            return "back"
+        elif(option1 == 1):
+            return "hvh"
         elif(option1 == 2): 
-            return 2
+            return "hvb"
         elif(option1 == 3): 
-            return 3
-        
+            return "bvb"    
             
     except ValueError:
         print("Input not valid, try again...")
 
 
 def difficulty():
-    difficulty_menu = True
-
-    while(difficulty_menu):
+    while(True):
         print("\n\n\n\n\n\n\n\n\n\n")
         print("Choose difficulty")
+        print("[0] Go Back")
         print("[1] Easy")
         print("[2] Medium")
         print("[3] Hard")
-        print("[4] Exit")
         try:
             option2 = int(input("Choose the destination: "))
-            if(option2 == 1):
+            if(option2 == 0):
+                return "back"
+            elif(option2 == 1):
                 return "Easy"
             elif(option2 == 2):
                 return "Medium"
             elif(option2 ==3):
                 return "Hard"
-            elif(option2 == 4):
-                exit()
-            difficulty_menu = False
         except ValueError:
             print("\n\n\n Input not valid, try again...")
-    
 
-main_menu()
+# main_menu()

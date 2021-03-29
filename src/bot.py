@@ -1,4 +1,6 @@
 from logic import possible_moves_black, possible_moves_white, gameOver, playerUpdate, getLastPieceIndex
+import random
+
 
 class Node:
     def __init__(self, state, score):
@@ -9,24 +11,30 @@ class Node:
 
     def getBestMove(self, player):
         if (player == 1):
-            max = -1000
+            max = -10000
             for i in range(len(self.children)):
                 (move, min) = self.children[i].getMin()
                 if (min > max):
                     moveToPlay = move
                     max = min
+                """ elif (min == max and bool(random.randrange(0, 2))):
+                    moveToPlay = move
+                    max = min """
             return (moveToPlay, max)
         elif (player == 2):
-            min = 1000
+            min = 10000
             for i in range(len(self.children)):
                 (move, max) = self.children[i].getMax()
                 if (max < min):
                     moveToPlay = move
                     min = max
+                """ elif (max == min and bool(random.randrange(0, 2))):
+                    moveToPlay = move
+                    min = max """
             return (moveToPlay, min)
 
     def getMax(self):
-        max = -1000
+        max = -10000
         if(len(self.children) == 0):
             return (self.state, self.score)
         for i in range(len(self.children)):
@@ -38,7 +46,7 @@ class Node:
 
 
     def getMin(self):
-        min = 1000
+        min = 10000
         if(len(self.children) == 0):
             return (self.state, self.score)
         for i in range(len(self.children)):
@@ -64,9 +72,9 @@ class Node:
                 tempScore = adjacentHeuristic(tempArray) # TODO
                 if (gameOver(tempArray, index)):
                     if (player == 1):
-                        tempScore = 999
+                        tempScore = 999 + depth
                     else:
-                        tempScore = -999
+                        tempScore = -999 - depth
                     newNode = Node(tempArray, tempScore)
                     self.children.append(newNode)
                 else:
@@ -81,8 +89,8 @@ class Node:
     def printTree(self, spaces):
         for n in range(spaces):
             print("   ", end = "")
-        print(self.state)
-        print(str(self.score))
+        print(self.state + " " + str(self.score))
+        #print(str(self.score))
         for i in range(len(self.children)):
             self.children[i].printTree(spaces + 1)
 
@@ -198,8 +206,62 @@ def choose_move_minimax(pieces, depth, heuristic, player):
     #print(root)
     root.addChildren(depth, player)
 
-    pieces = root.getBestMove(player)[0]
+    (pieces, var) = root.getBestMove(player)
+    print(var)
+    
 
     return (pieces, getLastPieceIndex(tempPieces, pieces))
+
+def funcao(possible_move, depth, player, checker):
+    value = None
+    pieces = None
+    depth -= 1
+    if (depth == 0):
+        return (adjacentHeuristic(possible_move), possible_move)
+    else:
+        if (player == 1):
+            possible_moves = possible_moves_black(possible_move)
+        else:
+            possible_moves = possible_moves_white(possible_move)
+
+
+        for i in range(len(possible_moves)):
+
+            tempArray = possible_move[:]
+            index = tempArray.index(possible_moves[i][0])
+            tempArray[index] = possible_moves[i][1]
+
+            if(player == 1):
+                (tempValue, tempPieces) = funcao(tempArray, depth, 2, value)
+            else:
+                (tempValue, tempPieces) = funcao(tempArray, depth, 1, value)
+
+
+            if (value == None):
+                #print("New Node")
+                value = tempValue
+                pieces = tempArray
+
+            if (player == 1 and tempValue > value):
+                value = tempValue
+                pieces = tempArray
+                #print(player, depth, value, pieces)           
+            elif (checker != None and player == 1 and value >= checker): # AB
+                return (value, pieces) 
+        
+            if (player == 2 and tempValue < value):
+                value = tempValue
+                pieces = tempArray
+                #print(player, depth, value, pieces)     
+            elif (checker != None and player == 2 and value <= checker): # AB
+                return (value, pieces) 
+
+        return (value, pieces)
+
+print(funcao([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)], 7, 1, None))
+
+""" root = Node([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)], adjacentHeuristic([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)]))
+root.addChildren(5, 1)
+print(root.getBestMove(1)) """
 
   

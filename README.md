@@ -2,8 +2,12 @@
 
 # TODO:
 
-- Draw
+-randomize children
+-alpha beta cuts
+-tie
+-heuristics
 
-- Upgrade visually
+-botvbot W and B
+- human v bot
 
-- Botvsbot final play not playing
+- do function without ab cuts

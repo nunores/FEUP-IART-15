@@ -9,16 +9,13 @@ def botvsbot(pieces):
     while not gameOver(pieces, last_piece):
         printBoard(pieces, player)
         
-        (pieces, last_piece) = choose_move_minimax(pieces, 6, adjacentHeuristic, player)
-
+        (pieces, last_piece) = choose_move_minimax(pieces, 4, adjacentHeuristic, player)
 
         player = playerUpdate(player)
+        time.sleep(2)
 
 
 def main(pieces):
-
-
-    
     player = 1
     last_piece = -1
 
@@ -76,6 +73,7 @@ def main(pieces):
 
 #main([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)])
 botvsbot([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)])
+#main_menu()
 
 #print(len(possible_moves_black([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)])))
 

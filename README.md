@@ -4,8 +4,9 @@
 
 -randomize children (done)
 -alpha beta cuts    (done)
--tie
+-tie                (done)
 -heuristics
+-Boards iguais em depth 6
 
 -botvbot W and B    (done)
 - human v bot

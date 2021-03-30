@@ -4,16 +4,25 @@ from bot import *
 import time
 
 def botvsbot(pieces):
+    global queue
+
     last_piece = -1
     player = 1
-    while not gameOver(pieces, last_piece):
+    while not gameOver(pieces, last_piece) and not draw(queue):
         printBoardBot(pieces, player)
-        
-        (pieces, last_piece) = choose_move_minimax(pieces, 4, adjacentHeuristic, player)
+        start = time.time()
+        print(queue)
+        (pieces, last_piece) = choose_move_minimax(pieces, queue, 6, player)
+        end = time.time()
+        print(end-start)
+        queue.appendleft(pieces)
 
         player = playerUpdate(player)
-        time.sleep(2)
+
     printBoardBot(pieces, player)
+
+    queue.clear()
+    
 
 
 def playervsplayer(pieces):
@@ -56,13 +65,15 @@ def playervsplayer(pieces):
                 tile_chosen = int(input("Choose the destination: "))
             except ValueError:
                 print("Input not valid")
+
+        # queue.appendleft(pieces)
         
         if (player == 1):
             move(pieces, pieces[piece_chosen - 1], final_moves[tile_chosen - 1])
         else:
             move(pieces, pieces[piece_chosen + 2], final_moves[tile_chosen - 1])
 
-        print(adjacentHeuristic(pieces))
+        #print(adjacentHeuristic(pieces))
 
         player = playerUpdate(player)
 

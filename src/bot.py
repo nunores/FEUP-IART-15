@@ -1,8 +1,9 @@
-from logic import get_possible_moves, gameOver, playerUpdate, getLastPieceIndex
+from logic import *
+import copy
 import random
 import time
 
-class Node:
+""" class Node:
     def __init__(self, state, score):
         self.children = []
         self.state = state
@@ -17,9 +18,9 @@ class Node:
                 if (min > max):
                     moveToPlay = move
                     max = min
-                """ elif (min == max and bool(random.randrange(0, 2))):
+                 elif (min == max and bool(random.randrange(0, 2))):
                     moveToPlay = move
-                    max = min """
+                    max = min 
             return (moveToPlay, max)
         elif (player == 2):
             min = 10000
@@ -28,9 +29,9 @@ class Node:
                 if (max < min):
                     moveToPlay = move
                     min = max
-                """ elif (max == min and bool(random.randrange(0, 2))):
+                 elif (max == min and bool(random.randrange(0, 2))):
                     moveToPlay = move
-                    min = max """
+                    min = max 
             return (moveToPlay, min)
 
     def getMax(self):
@@ -93,7 +94,7 @@ class Node:
         print(self.state + " " + str(self.score))
         #print(str(self.score))
         for i in range(len(self.children)):
-            self.children[i].printTree(spaces + 1)
+            self.children[i].printTree(spaces + 1) """
 
 """ 
 def generateTree():
@@ -105,7 +106,10 @@ for possible_moves:
 
 
 # Heuristic that considers the amount of adjacent pieces of a given player and the same for the other player, subtracting them
-def adjacentHeuristic(pieces):
+def adjacentHeuristic(pieces, queue):
+    queue.appendleft(pieces)
+    if (draw(queue)):
+        return 0
     myScore = getNumAdjacents(pieces, 1)
     opponentScore = getNumAdjacents(pieces, 2)
     score = myScore - opponentScore
@@ -155,7 +159,7 @@ def isAdjacent(piece1, piece2):
         return True
     return False
 
-def choose_move_adjacent(pieces, player):
+""" def choose_move_adjacent(pieces, player):
 
     #root = Node(pieces, 0) ################################################################
     
@@ -197,41 +201,46 @@ def choose_move_adjacent(pieces, player):
         pieces[pieces.index(possible_moves[indexMove][0])] = possible_moves[indexMove][1]
 
     print(score)
-    return pieces.index(possible_moves[indexMove][1])
+    return pieces.index(possible_moves[indexMove][1]) """
 
-def choose_move_minimax(pieces, depth, heuristic, player):
+def choose_move_minimax(pieces, queue, depth, player):
 
     tempPieces = pieces[:]
 
-    root = Node(pieces, heuristic(pieces))
-    #print(root)
-    root.addChildren(depth, player)
-
-    (pieces, var) = root.getBestMove(player)
+    (var, pieces) = minimax(pieces, queue, depth, player, None, True, adjacentHeuristic, 1)
+    #print(pieces)
     print(var)
     
 
     return (pieces, getLastPieceIndex(tempPieces, pieces))
 
-def minimax(possible_move, depth, player, checker, abCuts):
+def minimax(possible_move, queue, depth, player, checker, abCuts, heuristic, arg):
     value = None
     pieces = None
     depth -= 1
     if (depth == 0): # Base case
-        return (adjacentHeuristic(possible_move), possible_move)
+        return (heuristic(possible_move, queue), possible_move)
     else:
         if (player == 1):
             possible_moves = get_possible_moves(possible_move, "black")
         else:
             possible_moves = get_possible_moves(possible_move, "white")
 
-
         for i in range(len(possible_moves)):
-
+            if (arg==1):
+                print(possible_moves)
+            arg += 1
+            
             # Setup
             tempArray = possible_move[:]
             index = tempArray.index(possible_moves[i][0])
             tempArray[index] = possible_moves[i][1]
+            
+            tempQueue = copy.deepcopy(queue)
+            tempQueue.appendleft(tempArray)
+
+            if (draw(tempQueue)):
+                return (0, tempArray)
 
             if (gameOver(tempArray, index)):
                 if (player == 1):
@@ -242,28 +251,25 @@ def minimax(possible_move, depth, player, checker, abCuts):
                     return (tempScore, tempArray)
 
             if(player == 1):
-                (tempValue, tempPieces) = minimax(tempArray, depth, 2, value, abCuts)
+                (tempValue, tempPieces) = minimax(tempArray, tempQueue, depth, 2, value, abCuts, heuristic, arg)
             else:
-                (tempValue, tempPieces) = minimax(tempArray, depth, 1, value, abCuts)
+                (tempValue, tempPieces) = minimax(tempArray, tempQueue, depth, 1, value, abCuts, heuristic, arg)
 
             # Minimax Backtracking Algorithm
 
             if (value == None):
-                #print("New Node")
                 value = tempValue
                 pieces = tempArray
 
             if (player == 1 and tempValue > value):
                 value = tempValue
                 pieces = tempArray
-                #print(player, depth, value, pieces)           
             elif (abCuts and checker != None and player == 1 and value >= checker):
                 return (value, pieces) 
         
             if (player == 2 and tempValue < value):
                 value = tempValue
                 pieces = tempArray
-                #print(player, depth, value, pieces)     
             elif (abCuts and checker != None and player == 2 and value <= checker):
                 return (value, pieces) 
 
@@ -271,7 +277,7 @@ def minimax(possible_move, depth, player, checker, abCuts):
 
 #start = time.time()
 
-print(minimax([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)], 6, 1, None, True))
+#print(minimax([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)], 6, 1, None, True))
 
 #end = time.time()
 #print(end - start)

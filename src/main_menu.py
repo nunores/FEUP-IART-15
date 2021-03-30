@@ -22,7 +22,7 @@ def main_menu():
                 # TODO Chamar outros game modes
             elif(option1 == 2):
                 current_difficulty = difficulty()
-                if(current_difficulty == "back")
+                if(current_difficulty == "back"):
                     continue
                 # TODO Chamar outros difficulties 
             elif(option1 == 3):

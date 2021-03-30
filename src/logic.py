@@ -1,3 +1,5 @@
+import collections
+
 # Returns list with original position and possible end positions in every direction for every black piece
 """ def possible_moves_black(pieces):
     result = []
@@ -51,7 +53,7 @@ def get_possible_moves(pieces, color):
         result.append((pieces[piece], move_top_left(pieces, pieces[piece])))
         result.append((pieces[piece], move_top(pieces, pieces[piece])))
         result.append((pieces[piece], move_top_right(pieces, pieces[piece])))
-    for i in range(len(result) - 1, 0, -1):
+    for i in range(len(result) - 1, -1, -1):
         if (result[i][0] == result[i][1]): # Removes obsolete moves
             result.remove(result[i])
     return result
@@ -152,13 +154,23 @@ def move(pieces, piece_chosen, tile_chosen):
         if(piece_chosen == pieces[i]):
             pieces[i] = tile_chosen
 
+queue = collections.deque(maxlen=13)
+
+def draw(tempQueue):
+    global queue
+
+    if (len(queue) == 13):
+        if (tempQueue[0] == tempQueue[4] and tempQueue[4] == tempQueue[8] and tempQueue[8] == tempQueue[12]):
+            print("Recognizes draw")
+            return True
+    return False
+
 # Last_piece is the index of the last played piece
 def gameOver(pieces, last_piece):
     if(last_piece >= 3):
         return (checkLine("white", pieces, last_piece) or checkDiagonals("white", pieces, last_piece) or checkColumn("white", pieces, last_piece))
     else:
         return (checkLine("black", pieces, last_piece) or checkDiagonals("black", pieces, last_piece) or checkColumn("black", pieces, last_piece))
-        
 
 def checkLine(color, pieces, last_piece):
     black_array = pieces[:3]

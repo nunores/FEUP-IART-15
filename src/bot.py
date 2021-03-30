@@ -1,6 +1,6 @@
-from logic import possible_moves_black, possible_moves_white, gameOver, playerUpdate, getLastPieceIndex
+from logic import get_possible_moves, gameOver, playerUpdate, getLastPieceIndex
 import random
-
+import time
 
 class Node:
     def __init__(self, state, score):
@@ -62,9 +62,10 @@ class Node:
         depth -= 1
         if (depth != 0):
             if (player == 1):
-                possible_moves = possible_moves_black(self.state)
+                possible_moves = get_possible_moves(self.state, "black")
             else:
-                possible_moves = possible_moves_white(self.state)
+                possible_moves = get_possible_moves(self.state, "white")
+            
             for i in range(len(possible_moves)):
                 tempArray = self.state[:]
                 index = tempArray.index(possible_moves[i][0])
@@ -159,7 +160,7 @@ def choose_move_adjacent(pieces, player):
     #root = Node(pieces, 0) ################################################################
     
     if (player == 1):
-        possible_moves = possible_moves_black(pieces)
+        possible_moves = get_possible_moves(pieces, "black")
         score = -4 # Worse possible score
         indexMove = 0
 
@@ -177,7 +178,7 @@ def choose_move_adjacent(pieces, player):
                 break
         pieces[pieces.index(possible_moves[indexMove][0])] = possible_moves[indexMove][1]
     else:
-        possible_moves = possible_moves_white(pieces)
+        possible_moves = get_possible_moves(pieces, "white")
         score = 4 # Worse possible score
         indexMove = 0
 
@@ -212,30 +213,40 @@ def choose_move_minimax(pieces, depth, heuristic, player):
 
     return (pieces, getLastPieceIndex(tempPieces, pieces))
 
-def funcao(possible_move, depth, player, checker):
+def minimax(possible_move, depth, player, checker, abCuts):
     value = None
     pieces = None
     depth -= 1
-    if (depth == 0):
+    if (depth == 0): # Base case
         return (adjacentHeuristic(possible_move), possible_move)
     else:
         if (player == 1):
-            possible_moves = possible_moves_black(possible_move)
+            possible_moves = get_possible_moves(possible_move, "black")
         else:
-            possible_moves = possible_moves_white(possible_move)
+            possible_moves = get_possible_moves(possible_move, "white")
 
 
         for i in range(len(possible_moves)):
 
+            # Setup
             tempArray = possible_move[:]
             index = tempArray.index(possible_moves[i][0])
             tempArray[index] = possible_moves[i][1]
 
-            if(player == 1):
-                (tempValue, tempPieces) = funcao(tempArray, depth, 2, value)
-            else:
-                (tempValue, tempPieces) = funcao(tempArray, depth, 1, value)
+            if (gameOver(tempArray, index)):
+                if (player == 1):
+                    tempScore = 999 + depth
+                    return (tempScore, tempArray)
+                else:
+                    tempScore = -999 - depth
+                    return (tempScore, tempArray)
 
+            if(player == 1):
+                (tempValue, tempPieces) = minimax(tempArray, depth, 2, value, abCuts)
+            else:
+                (tempValue, tempPieces) = minimax(tempArray, depth, 1, value, abCuts)
+
+            # Minimax Backtracking Algorithm
 
             if (value == None):
                 #print("New Node")
@@ -246,22 +257,27 @@ def funcao(possible_move, depth, player, checker):
                 value = tempValue
                 pieces = tempArray
                 #print(player, depth, value, pieces)           
-            elif (checker != None and player == 1 and value >= checker): # AB
+            elif (abCuts and checker != None and player == 1 and value >= checker):
                 return (value, pieces) 
         
             if (player == 2 and tempValue < value):
                 value = tempValue
                 pieces = tempArray
                 #print(player, depth, value, pieces)     
-            elif (checker != None and player == 2 and value <= checker): # AB
+            elif (abCuts and checker != None and player == 2 and value <= checker):
                 return (value, pieces) 
 
         return (value, pieces)
 
-print(funcao([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)], 7, 1, None))
+#start = time.time()
 
-""" root = Node([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)], adjacentHeuristic([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)]))
-root.addChildren(5, 1)
-print(root.getBestMove(1)) """
+print(minimax([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)], 6, 1, None, True))
+
+#end = time.time()
+#print(end - start)
+
+#root = Node([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)], adjacentHeuristic([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)]))
+#root.addChildren(7, 1)
+#print(root.getBestMove(1))
 
   

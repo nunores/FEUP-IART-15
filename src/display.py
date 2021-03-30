@@ -37,6 +37,23 @@ def printBoard(pieces, player):
                 print("|     ", end="")
         print("|")
     print("|-----|-----|-----|-----|-----|")
+
+
+def printBoardBot(pieces, player):
+    for i in range(5, 0, -1):
+        print("|-----|-----|-----|-----|-----|")
+        for j in range(1, 6):
+            if((j, i) in pieces):
+                index = pieces.index((j, i))
+                if(index < 3): # Blacks
+                    print("|  B  ", end="")
+
+                else: # Whites
+                    print("|  W  ", end="")
+            else:
+                print("|     ", end="")
+        print("|")
+    print("|-----|-----|-----|-----|-----|")
     
 
 def printPiece(piece):

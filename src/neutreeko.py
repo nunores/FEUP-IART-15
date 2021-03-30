@@ -7,15 +7,16 @@ def botvsbot(pieces):
     last_piece = -1
     player = 1
     while not gameOver(pieces, last_piece):
-        printBoard(pieces, player)
+        printBoardBot(pieces, player)
         
         (pieces, last_piece) = choose_move_minimax(pieces, 4, adjacentHeuristic, player)
 
         player = playerUpdate(player)
         time.sleep(2)
+    printBoardBot(pieces, player)
 
 
-def main(pieces):
+def playervsplayer(pieces):
     player = 1
     last_piece = -1
 
@@ -31,20 +32,21 @@ def main(pieces):
             except ValueError:
                 print("Input not valid")
 
-        if (player == 1 and not possibleMovesPiece(pieces, possible_moves_black(pieces), pieces[piece_chosen - 1])):
+        # Error chosing move
+        if (player == 1 and not possibleMovesPiece(pieces, get_possible_moves(pieces, "black"), pieces[piece_chosen - 1])):
             piece_chosen = -1
             print("That black piece cannot be moved")
-        elif (player == 2 and not possibleMovesPiece(pieces, possible_moves_white(pieces), pieces[piece_chosen + 2])):
+        elif (player == 2 and not possibleMovesPiece(pieces, get_possible_moves(pieces, "white"), pieces[piece_chosen + 2])):
             piece_chosen = -1
             print("That white piece cannot be moved")
             
         if (player == 1):
             last_piece = piece_chosen - 1
-            possible_moves = possible_moves_black(pieces)
+            possible_moves = get_possible_moves(pieces, "black")
             final_moves = printPossibleMoves(pieces, possible_moves, pieces[piece_chosen-1])
         else:
             last_piece = piece_chosen + 2
-            possible_moves = possible_moves_white(pieces)
+            possible_moves = get_possible_moves(pieces, "white")
             final_moves = printPossibleMoves(pieces, possible_moves, pieces[piece_chosen+2])
 
         # Choose where to move
@@ -71,7 +73,7 @@ def main(pieces):
 
 
 
-#main([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)])
+#playervsplayer([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)])
 botvsbot([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)])
 #main_menu()
 
@@ -81,11 +83,5 @@ botvsbot([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)])
 #root.addChildren(3, 1)
 #root.printTree(0)
 #print(str(root.getBestMove(1)))
-
-
-#print(getNumAdjacents([(2, 1), (4, 1), (3, 4), (1, 4), (2, 5), (3, 5)], 2))
-
-#print(possible_moves_white([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)]))
-
 
 

@@ -1,5 +1,5 @@
 # Returns list with original position and possible end positions in every direction for every black piece
-def possible_moves_black(pieces):
+""" def possible_moves_black(pieces):
     result = []
     for piece in range(3):
         result.append((pieces[piece], move_right(pieces, pieces[piece])))
@@ -30,9 +30,31 @@ def possible_moves_white(pieces):
     for i in range(len(result) - 1, 0, -1):
         if (result[i][0] == result[i][1]): # Removes obsolete moves
             result.remove(result[i])
+    return result """
+
+# Returns the possible moves considering the current state and the player color
+def get_possible_moves(pieces, color):
+    result = []
+
+    if(color == "white"):
+        min = 3
+        max = 6
+    elif (color == "black"):
+        min = 0
+        max = 3
+    for piece in range(min, max):
+        result.append((pieces[piece], move_right(pieces, pieces[piece])))
+        result.append((pieces[piece], move_bot_right(pieces, pieces[piece])))
+        result.append((pieces[piece], move_bot(pieces, pieces[piece])))
+        result.append((pieces[piece], move_bot_left(pieces, pieces[piece])))
+        result.append((pieces[piece], move_left(pieces, pieces[piece])))
+        result.append((pieces[piece], move_top_left(pieces, pieces[piece])))
+        result.append((pieces[piece], move_top(pieces, pieces[piece])))
+        result.append((pieces[piece], move_top_right(pieces, pieces[piece])))
+    for i in range(len(result) - 1, 0, -1):
+        if (result[i][0] == result[i][1]): # Removes obsolete moves
+            result.remove(result[i])
     return result
-
-
 
 def move_right(pieces, piece):
     if (piece[0] == 5):
@@ -124,7 +146,6 @@ def playerUpdate(player):
     elif (player == 2): 
         return 1
     
-
 
 def move(pieces, piece_chosen, tile_chosen):   
     for i in range(len(pieces)):

@@ -3,108 +3,6 @@ import copy
 import random
 import time
 
-""" class Node:
-    def __init__(self, state, score):
-        self.children = []
-        self.state = state
-        self.score = score
-        
-
-    def getBestMove(self, player):
-        if (player == 1):
-            max = -10000
-            for i in range(len(self.children)):
-                (move, min) = self.children[i].getMin()
-                if (min > max):
-                    moveToPlay = move
-                    max = min
-                 elif (min == max and bool(random.randrange(0, 2))):
-                    moveToPlay = move
-                    max = min 
-            return (moveToPlay, max)
-        elif (player == 2):
-            min = 10000
-            for i in range(len(self.children)):
-                (move, max) = self.children[i].getMax()
-                if (max < min):
-                    moveToPlay = move
-                    min = max
-                 elif (max == min and bool(random.randrange(0, 2))):
-                    moveToPlay = move
-                    min = max 
-            return (moveToPlay, min)
-
-    def getMax(self):
-        max = -10000
-        if(len(self.children) == 0):
-            return (self.state, self.score)
-        for i in range(len(self.children)):
-            min = self.children[i].getMin()[1]
-            if (min > max):
-                moveToPlay = self.state
-                max = min
-        return (moveToPlay, max)
-
-
-    def getMin(self):
-        min = 10000
-        if(len(self.children) == 0):
-            return (self.state, self.score)
-        for i in range(len(self.children)):
-            max = self.children[i].getMax()[1]
-            if (max < min):
-                moveToPlay = self.state
-                min = max
-        return (moveToPlay, min)
-
-
- 
-    def addChildren(self, depth, player):
-        depth -= 1
-        if (depth != 0):
-            if (player == 1):
-                possible_moves = get_possible_moves(self.state, "black")
-            else:
-                possible_moves = get_possible_moves(self.state, "white")
-            
-            for i in range(len(possible_moves)):
-                tempArray = self.state[:]
-                index = tempArray.index(possible_moves[i][0])
-                tempArray[index] = possible_moves[i][1]
-                tempScore = adjacentHeuristic(tempArray) # TODO
-                if (gameOver(tempArray, index)):
-                    if (player == 1):
-                        tempScore = 999 + depth
-                    else:
-                        tempScore = -999 - depth
-                    newNode = Node(tempArray, tempScore)
-                    self.children.append(newNode)
-                else:
-                    newNode = Node(tempArray, tempScore)
-                    self.children.append(newNode)
-                    newNode.addChildren(depth, playerUpdate(player))
-
-
-    def __eq__(self, node):
-        return self.state == node.state
-
-    def printTree(self, spaces):
-        for n in range(spaces):
-            print("   ", end = "")
-        print(self.state + " " + str(self.score))
-        #print(str(self.score))
-        for i in range(len(self.children)):
-            self.children[i].printTree(spaces + 1) """
-
-""" 
-def generateTree():
-    
-
-for possible_moves:
-    root.addChildren(possible_move, 3)
-"""
-
-
 # Heuristic that considers the amount of adjacent pieces of a given player and the same for the other player, subtracting them
 def adjacentHeuristic(pieces, queue):
     queue.appendleft(pieces)
@@ -114,6 +12,41 @@ def adjacentHeuristic(pieces, queue):
     opponentScore = getNumAdjacents(pieces, 2)
     score = myScore - opponentScore
     return score
+
+def adjacentBorderHeuristic(pieces, queue):
+    queue.appendleft(pieces)
+    if (draw(queue)):
+        return 0
+    myScore = getNumAdjacents(pieces, 1) + getNumPiecesBorder(pieces, 1)
+    opponentScore = getNumAdjacents(pieces, 2) + getNumPiecesBorder(pieces, 2)
+    score = myScore - opponentScore
+    return score
+    
+def borderHeuristic(pieces, queue):
+    queue.appendleft(pieces)
+    if (draw(queue)):
+        return 0
+    myScore = getNumPiecesBorder(pieces, 1)
+    opponentScore = getNumPiecesBorder(pieces, 2)
+    score = myScore - opponentScore
+    return score
+
+
+def getNumPiecesBorder(pieces, player):
+    num = 0
+    if(player == 1):
+        for i in range(0, 3):
+            if((pieces[i][0] == 1) or (pieces[i][0] == 5)): 
+                num += 0.15 #TODO Alterar isto
+            if((pieces[i][1] == 1) or (pieces[i][1] == 5)): 
+                num += 0.15
+    else:
+        for i in range(3, 6):
+            if((pieces[i][0] == 1) or (pieces[i][0] == 5)): 
+                num += 0.15
+            if((pieces[i][1] == 1) or (pieces[i][1] == 5)): 
+                num += 0.15
+    return num
         
 def getNumAdjacents(pieces, player):
     num = 0
@@ -159,62 +92,18 @@ def isAdjacent(piece1, piece2):
         return True
     return False
 
-""" def choose_move_adjacent(pieces, player):
-
-    #root = Node(pieces, 0) ################################################################
-    
-    if (player == 1):
-        possible_moves = get_possible_moves(pieces, "black")
-        score = -4 # Worse possible score
-        indexMove = 0
-
-        for i in range(len(possible_moves)):
-            tempArray = pieces[:] # Copy by value
-            index = tempArray.index(possible_moves[i][0])
-            tempArray[index] = possible_moves[i][1]
-            tempScore = adjacentHeuristic(tempArray)
-            if (tempScore > score):
-                score = tempScore
-                indexMove = i
-            if (gameOver(tempArray, index)): # Best possible score
-                score = tempScore
-                indexMove = i
-                break
-        pieces[pieces.index(possible_moves[indexMove][0])] = possible_moves[indexMove][1]
-    else:
-        possible_moves = get_possible_moves(pieces, "white")
-        score = 4 # Worse possible score
-        indexMove = 0
-
-        for i in range(len(possible_moves)):
-            tempArray = pieces[:]
-            index = tempArray.index(possible_moves[i][0])
-            tempArray[index] = possible_moves[i][1]
-            tempScore = adjacentHeuristic(tempArray)
-            if (tempScore < score):
-                score = tempScore
-                indexMove = i
-            if (gameOver(tempArray, index)): # Best possible score
-                score = tempScore
-                indexMove = i
-                break
-        pieces[pieces.index(possible_moves[indexMove][0])] = possible_moves[indexMove][1]
-
-    print(score)
-    return pieces.index(possible_moves[indexMove][1]) """
-
-def choose_move_minimax(pieces, queue, depth, player):
+def choose_move_minimax(pieces, queue, depth, player, heuristic):
 
     tempPieces = pieces[:]
 
-    (var, pieces) = minimax(pieces, queue, depth, player, None, True, adjacentHeuristic, 1)
+    (var, pieces) = minimax(pieces, queue, depth, player, None, True, heuristic)
     #print(pieces)
     print(var)
     
 
     return (pieces, getLastPieceIndex(tempPieces, pieces))
 
-def minimax(possible_move, queue, depth, player, checker, abCuts, heuristic, arg):
+def minimax(possible_move, queue, depth, player, checker, abCuts, heuristic):
     value = None
     pieces = None
     depth -= 1
@@ -226,11 +115,7 @@ def minimax(possible_move, queue, depth, player, checker, abCuts, heuristic, arg
         else:
             possible_moves = get_possible_moves(possible_move, "white")
 
-        for i in range(len(possible_moves)):
-            if (arg==1):
-                print(possible_moves)
-            arg += 1
-            
+        for i in range(len(possible_moves)):       
             # Setup
             tempArray = possible_move[:]
             index = tempArray.index(possible_moves[i][0])
@@ -251,9 +136,9 @@ def minimax(possible_move, queue, depth, player, checker, abCuts, heuristic, arg
                     return (tempScore, tempArray)
 
             if(player == 1):
-                (tempValue, tempPieces) = minimax(tempArray, tempQueue, depth, 2, value, abCuts, heuristic, arg)
+                (tempValue, tempPieces) = minimax(tempArray, tempQueue, depth, 2, value, abCuts, heuristic)
             else:
-                (tempValue, tempPieces) = minimax(tempArray, tempQueue, depth, 1, value, abCuts, heuristic, arg)
+                (tempValue, tempPieces) = minimax(tempArray, tempQueue, depth, 1, value, abCuts, heuristic)
 
             # Minimax Backtracking Algorithm
 

@@ -1,39 +1,5 @@
 import collections
 
-# Returns list with original position and possible end positions in every direction for every black piece
-""" def possible_moves_black(pieces):
-    result = []
-    for piece in range(3):
-        result.append((pieces[piece], move_right(pieces, pieces[piece])))
-        result.append((pieces[piece], move_bot_right(pieces, pieces[piece])))
-        result.append((pieces[piece], move_bot(pieces, pieces[piece])))
-        result.append((pieces[piece], move_bot_left(pieces, pieces[piece])))
-        result.append((pieces[piece], move_left(pieces, pieces[piece])))
-        result.append((pieces[piece], move_top_left(pieces, pieces[piece])))
-        result.append((pieces[piece], move_top(pieces, pieces[piece])))
-        result.append((pieces[piece], move_top_right(pieces, pieces[piece])))
-    for i in range(len(result) - 1, 0, -1): # Removes obsolete moves
-        if (result[i][0] == result[i][1]):
-            result.remove(result[i])
-    return result
-
-# Returns list with original position and possible end positions in every direction for every white piece
-def possible_moves_white(pieces):
-    result = []
-    for piece in range(3, 6):
-        result.append((pieces[piece], move_right(pieces, pieces[piece])))
-        result.append((pieces[piece], move_bot_right(pieces, pieces[piece])))
-        result.append((pieces[piece], move_bot(pieces, pieces[piece])))
-        result.append((pieces[piece], move_bot_left(pieces, pieces[piece])))
-        result.append((pieces[piece], move_left(pieces, pieces[piece])))
-        result.append((pieces[piece], move_top_left(pieces, pieces[piece])))
-        result.append((pieces[piece], move_top(pieces, pieces[piece])))
-        result.append((pieces[piece], move_top_right(pieces, pieces[piece])))
-    for i in range(len(result) - 1, 0, -1):
-        if (result[i][0] == result[i][1]): # Removes obsolete moves
-            result.remove(result[i])
-    return result """
-
 # Returns the possible moves considering the current state and the player color
 def get_possible_moves(pieces, color):
     result = []
@@ -161,7 +127,6 @@ def draw(tempQueue):
 
     if (len(queue) == 13):
         if (tempQueue[0] == tempQueue[4] and tempQueue[4] == tempQueue[8] and tempQueue[8] == tempQueue[12]):
-            print("Recognizes draw")
             return True
     return False
 

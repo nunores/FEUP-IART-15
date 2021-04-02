@@ -3,7 +3,7 @@ from logic import *
 from bot import *
 import time
 
-def playervsbot(pieces):
+def playervsbot(pieces, heuristic):
     global queue
 
     last_piece = -1
@@ -49,7 +49,7 @@ def playervsbot(pieces):
             printBoardBot(pieces, player)
             start = time.time()
             print(queue)
-            (pieces, last_piece) = choose_move_minimax(pieces, queue, 6, player)
+            (pieces, last_piece) = choose_move_minimax(pieces, queue, 6, player, heuristic)
             end = time.time()
             print(end-start)
             queue.appendleft(pieces)
@@ -60,19 +60,31 @@ def playervsbot(pieces):
 
     queue.clear()
 
-def botvsbot(pieces):
+def botvsbot(pieces, heuristic1, heuristic2):
     global queue
 
     last_piece = -1
     player = 1
+    counter = 0
     while not gameOver(pieces, last_piece) and not draw(queue):
-        printBoardBot(pieces, player)
-        start = time.time()
-        print(queue)
-        (pieces, last_piece) = choose_move_minimax(pieces, queue, 6, player)
-        end = time.time()
-        print(end-start)
-        queue.appendleft(pieces)
+        if (player == 1):
+            printBoardBot(pieces, player)
+            start = time.time()
+            (pieces, last_piece) = choose_move_minimax(pieces, queue, 6, player, heuristic1)
+            end = time.time()
+            counter += 1
+            print("Counter: " + str(counter))
+            print(end-start)
+            queue.appendleft(pieces)
+        elif (player == 2):
+            printBoardBot(pieces, player)
+            start = time.time()
+            (pieces, last_piece) = choose_move_minimax(pieces, queue, 6, player, heuristic2)
+            end = time.time()
+            counter += 1
+            print("Counter: " + str(counter))
+            print(end-start)
+            queue.appendleft(pieces)
 
         player = playerUpdate(player)
 
@@ -142,8 +154,8 @@ def playervsplayer(pieces): # TODO Draw
 
 
 #playervsplayer([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)])
-#botvsbot([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)])
-playervsbot([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)])
+botvsbot([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)], adjacentBorderHeuristic, adjacentBorderHeuristic)
+#playervsbot([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)])
 #main_menu()
 
 #print(len(possible_moves_black([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)])))

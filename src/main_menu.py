@@ -1,39 +1,50 @@
 import sys
 from enum import Enum
+from os import system, name
 
 sys.tracebacklimit=0
+
+def clear():
+    if name == 'nt':
+        _ = system('cls')
+    else:
+        _ = system('clear')
 
 def main_menu():
     game_type = "N/A"
     current_difficulty = "Medium"
 
     while(True):
-        print("\n\n\n\n\n\n\n\n\n\n")
+        clear()
         print("Current Difficulty: " + current_difficulty)
+        print("[0] Exit")
         print("[1] Play")
         print("[2] Choose Difficulty")
-        print("[3] Exit")
         try:
             option1 = int(input("Choose the destination: "))
-            if(option1 == 1):
+            if(option1 == 0):
+                return
+            elif(option1 == 1):
                 game_type = choose_type()
                 if(game_type == "back"):
                     continue
-                # TODO Chamar outros game modes
+"""                 elif(game_type == )
+
+
+                else:
+                    raise Exception(ValueError) """
             elif(option1 == 2):
                 current_difficulty = difficulty()
                 if(current_difficulty == "back"):
                     continue
                 # TODO Chamar outros difficulties 
-            elif(option1 == 3):
-                return
             
         except ValueError:
-            print("Input not valid, try again...")
+            print("Error on input\n")
     
     
 def choose_type():
-    print("\n\n\n\n\n\n\n\n\n\n")
+    clear()
         
     print("[0] Go Back")
     print("[1] Human vs Human")
@@ -52,12 +63,12 @@ def choose_type():
             return "bvb"    
             
     except ValueError:
-        print("Input not valid, try again...")
+        print("\n")
 
 
 def difficulty():
     while(True):
-        print("\n\n\n\n\n\n\n\n\n\n")
+        clear()
         print("Choose difficulty")
         print("[0] Go Back")
         print("[1] Easy")
@@ -74,6 +85,6 @@ def difficulty():
             elif(option2 ==3):
                 return "Hard"
         except ValueError:
-            print("\n\n\n Input not valid, try again...")
+            print("\n")
 
-# main_menu()
+main_menu()

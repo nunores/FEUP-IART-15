@@ -12,9 +12,6 @@
 |     |  1  |     |  3  |     |
 |-----|-----|-----|-----|-----| """
 
-
-
-
 # Prints the Board taking into account the current player
 def printBoard(pieces, player):
     for i in range(5, 0, -1):

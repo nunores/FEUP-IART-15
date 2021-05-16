@@ -154,11 +154,11 @@ def playervsplayer(pieces): # TODO Draw
 
 
 #playervsplayer([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)])
-botvsbot([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)], adjacentBorderHeuristic, adjacentBorderHeuristic)
-#playervsbot([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)])
+#botvsbot([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)], adjacentBorderHeuristic, adjacentBorderHeuristic)
+playervsbot([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)], adjacentHeuristic)
 #main_menu()
 
-#print(len(possible_moves_black([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)])))
+#print(get_possible_moves([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)], "black"))
 
 #root = Node([(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)], adjacentHeuristic([(3, 1), (4, 1), (4, 2), (1, 4), (2, 5), (4, 5)]))
 #root.addChildren(3, 1)

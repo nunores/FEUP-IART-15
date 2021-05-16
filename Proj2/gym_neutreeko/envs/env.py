@@ -1,8 +1,16 @@
 import gym
 from gym import error, spaces, utils
 from gym.utils import seeding
+from .logic import *
 
-class ExampleEnv(gym.Env):
+def check_game_status(board, queue, last_piece):
+    """ Return -1 on an ongoing game, 0 on draw, 1 on win, 2 on loss"""
+    if draw(queue):
+        return 0
+    #if gameOver(board, last_piece):
+        
+
+class NeutreekoEnv(gym.Env):
     metadata = {'render.modes': ['human']}
 
     def __init__(self):
@@ -20,6 +28,8 @@ class ExampleEnv(gym.Env):
         """
 
         self.board = [(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)]
+        self.done = False
+        self.queue = []
         pass
 
     def step(self, action):
@@ -37,16 +47,19 @@ class ExampleEnv(gym.Env):
         assert self.action_space.contains(action)
 
         if self.done:
-            return self.functionReturningGameState, 0, True, None
+            return self._get_obs(), 0, True, None
 
         reward = 0
 
+        self.board[self.board.index(action[0])] = action[1]
 
         pass
 
+    def _get_obs(self):
+        return self.board
+
 
     def render(self, mode='human'):
-        print("Talas")
         """Renders the environment.
         The set of supported modes varies per environment. (And some environments do not support rendering at all.) 
         By convention, if mode is:

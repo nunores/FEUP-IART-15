@@ -3,6 +3,6 @@ import random
 
 import gym
 
-env = gym.make('gym_game:game-env-v0')
+env = gym.make('gym_neutreeko:game-env-v0')
 
 

@@ -1,22 +1,119 @@
 import gym
+import numpy as np
 from gym import error, spaces, utils
 from gym.utils import seeding
-from .logic import *
 
-def check_game_status(board, queue, last_piece):
-    """ Return -1 on an ongoing game, 0 on draw, 1 on win, 2 on loss"""
-    if draw(queue):
-        return 0
-    #if gameOver(board, last_piece):
+def check_game_status(position):
+    if position[0] == 4 and position[1] == 4:
+        return 1
+    return 0
+
+def updatePosition(board):
+    for i in range(5):
+        for n in range(5):
+            if board[i][n] == 1:
+                return (n, i)
+
+def move(action, board, x, y):
+    if action == 0:
+        return move_right(board, x, y)
+    elif action == 1:
+        return move_bot_right(board, x, y)
+    elif action == 2:
+        return move_bot(board, x, y)
+    elif action == 3:
+        return move_bot_left(board, x, y)
+    elif action == 4:
+        return move_left(board, x, y)
+    elif action == 5:
+        return move_top_left(board, x, y)
+    elif action == 6:
+        return move_top(board, x, y)
+    elif action == 7:
+        return move_top_right(board, x, y)
+    else:
+        print("Something went wrong")
+
+def move_right(board, x, y):
+    if (x == 4 or board[y][x+1] != 0):
+        return board
+    else:
+        newBoard = board
+        newBoard[y][x+1] = 1
+        newBoard[y][x] = 0
+        return move_right(newBoard, x+1, y)
+
+def move_bot_right(board, x, y):
+    if (x == 4 or y == 0 or board[y-1][x+1] != 0):
+        return board
+    else:
+        newBoard = board
+        newBoard[y-1][x+1] = 1
+        newBoard[y][x] = 0
+        return move_bot_right(newBoard, x+1, y-1)
+
+def move_bot(board, x, y):
+    if (y == 0 or board[y-1][x] != 0):
+        return board
+    else:
+        newBoard = board
+        newBoard[y-1][x] = 1
+        newBoard[y][x] = 0
+        return move_bot(newBoard, x, y-1)
+
+def move_bot_left(board, x, y):
+    if (x == 0 or y == 0 or board[y-1][x-1] != 0):
+        return board
+    else:
+        newBoard = board
+        newBoard[y-1][x-1] = 1
+        newBoard[y][x] = 0
+        return move_bot_left(newBoard, x-1, y-1)
+
+def move_left(board, x, y):
+    if (x == 0 or board[y][x-1] != 0):
+        return board
+    else:
+        newBoard = board
+        newBoard[y][x-1] = 1
+        newBoard[y][x] = 0
+        return move_left(newBoard, x-1, y)
+
+def move_top_left(board, x, y):
+    if (x == 0 or y == 4 or board[y+1][x-1] != 0):
+        return board
+    else:
+        newBoard = board
+        newBoard[y+1][x-1] = 1
+        newBoard[y][x] = 0
+        return move_top_left(newBoard, x-1, y+1)
+
+def move_top(board, x, y):
+    if (y == 4 or board[y+1][x] != 0):
+        return board
+    else:
+        newBoard = board
+        newBoard[y+1][x] = 1
+        newBoard[y][x] = 0
+        return move_top(newBoard, x, y+1)
+
+def move_top_right(board, x, y):
+    if (x == 4 or y == 4 or board[y+1][x+1] != 0):
+        return board
+    else:
+        newBoard = board
+        newBoard[y+1][x+1] = 1
+        newBoard[y][x] = 0
+        return move_top_right(newBoard, x+1, y+1)
         
-
 class NeutreekoEnv(gym.Env):
     metadata = {'render.modes': ['human']}
 
     def __init__(self):
-        self.action_space = spaces.Discrete(3*8)
-        self.observation_space = spaces.Discrete(3*8)   
-        pass
+        self.action_space = spaces.Discrete(8)
+        self.observation_space = spaces.Discrete(25)
+        #self.observation_space = spaces.Box(np.array([0, 0, 0, 0, 0]), np.array([2, 2, 2, 2, 2]), dtype = np.int)   
+        self.reset()
 
     def reset(self):
         """Resets the environment to an initial state and returns an initial observation.
@@ -27,10 +124,10 @@ class NeutreekoEnv(gym.Env):
             observation (object): the initial observation.
         """
 
-        self.board = [(2, 1), (4, 1), (3, 4), (3, 2), (2, 5), (4, 5)]
+        self.board = [[0, 1, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, -1, 0, 0], [0, -1, 0, -1, 0]]
         self.done = False
-        self.queue = []
-        pass
+        self.position = (1, 0)
+        return 0
 
     def step(self, action):
         """Run one timestep of the environment's dynamics. When end of episode is reached, you are responsible for calling 
@@ -47,17 +144,19 @@ class NeutreekoEnv(gym.Env):
         assert self.action_space.contains(action)
 
         if self.done:
-            return self._get_obs(), 0, True, None
+            return self.position[0] + self.position[1]*5, 0, True, None
 
-        reward = 0
+        reward = -0.05
 
-        self.board[self.board.index(action[0])] = action[1]
+        self.board = move(action, self.board, self.position[0], self.position[1])
+        self.position = updatePosition(self.board)
+        status = check_game_status(self.position)
 
-        pass
+        if status == 1:
+            self.done = True
+            reward += 1
 
-    def _get_obs(self):
-        return self.board
-
+        return self.position[0] + self.position[1]*5, reward, self.done, None
 
     def render(self, mode='human'):
         """Renders the environment.
@@ -84,7 +183,8 @@ class NeutreekoEnv(gym.Env):
                 else:
                     super(MyEnv, self).render(mode=mode) # just raise an exception
         """
-        pass
+        for i in range(4, -1, -1):
+            print(self.board[i])
  
     def close(self):
         """Performs any necessary cleanup.

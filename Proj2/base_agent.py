@@ -3,7 +3,7 @@ import random
 import gym_neutreeko
 import gym
 import numpy as np
-    
+
 
 env = gym.make('game-env-v0')
 env.render()
@@ -14,6 +14,8 @@ state_size = env.observation_space.n
 state = env.observation_space
 
 qtable = np.zeros((state_size, action_size))
+
+# Hyperparameter Setup
 
 total_episodes = 20000
 learning_rate = 0.8

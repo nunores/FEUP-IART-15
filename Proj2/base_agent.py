@@ -3,17 +3,24 @@ import random
 import gym_neutreeko
 import gym
 import numpy as np
+np.set_printoptions(threshold=np.inf)
 
+def writeToFile():
+    f = open("temp.txt", "w")
+    f.write(str(qtable))
+    f.close()
 
 env = gym.make('game-env-v0')
 env.render()
 
 action_size = env.action_space.n
-state_size = env.observation_space.n
+#state_size = env.observation_space.n
+num_box = tuple((env.observation_space.high + np.ones(env.observation_space.shape)).astype(int))
+qtable = np.zeros(num_box + (env.action_space.n,))
 
 state = env.observation_space
 
-qtable = np.zeros((state_size, action_size))
+#qtable = np.zeros((state_size, action_size))
 
 # Hyperparameter Setup
 
@@ -32,6 +39,7 @@ rewards = []
 for episode in range(total_episodes):
     # Reset the environment
     state = env.reset()
+    #print(state)
 #     print(f"state: {state}")
     step = 0
     done = False
@@ -49,7 +57,8 @@ for episode in range(total_episodes):
         #(taking the biggest Q value for this state)
         if exp_exp_tradeoff > epsilon:
             #print(f"qtable[state,:] {qtable[state,:]}")
-            action = np.argmax(qtable[state,:])
+            #action = np.argmax(qtable[state,:])
+            action = np.argmax(qtable[state])
 
         # Else doing a random choice --> exploration
         else:
@@ -58,14 +67,21 @@ for episode in range(total_episodes):
 #         print(f"action is {action}")
 
         # Take the action (a) and observe the outcome state(s') and reward (r)
+        #print(action)
         new_state, reward, done, info = env.step(action)
         
 #         print(f"new_state: {new_state}, reward: {reward}, done: {done}, info: {info}")
 
         # Update Q(s,a):= Q(s,a) + lr [R(s,a) + gamma * max Q(s',a') - Q(s,a)]
         # qtable[new_state,:] : all the actions we can take from new state
-        qtable[state, action] = qtable[state, action] + learning_rate * (reward + gamma * np.max(qtable[new_state, :]) - qtable[state, action])
-        
+        ####qtable[state, action] = qtable[state, action] + learning_rate * (reward + gamma * np.max(qtable[new_state, :]) - qtable[state, action])
+        q_value = qtable[state][action]
+        #print(new_state)
+        best_q = np.max(qtable[new_state])
+
+        # Q(state, action) <- (1 - a)Q(state, action) + a(reward + rmaxQ(next state, all actions))
+        qtable[state][action] = (1 - learning_rate) * q_value + learning_rate * (reward + gamma * best_q)
+        #print(qtable[state, action])
 #         print(f'qtable: {qtable}')
         
         total_rewards = total_rewards + reward
@@ -75,7 +91,7 @@ for episode in range(total_episodes):
         # Our new state is state
         state = new_state
         
-#         print(f'new state: {state}')
+        #print(f'new state: {state}')
         
         # If done (if we're dead) : finish episode
         if done == True: 
@@ -87,8 +103,19 @@ for episode in range(total_episodes):
     rewards.append(total_rewards)
 
 print ("Score/time: " +  str(sum(rewards)/total_episodes))
-print(qtable)
+#print(qtable)
 print(epsilon)
+env.reset()
+
+for i in range (100):
+    print("------------------")
+    action = np.argmax(qtable[state])
+    new_state, reward, done, info = env.step(action)
+    state = new_state
+    env.render()
+
+
+writeToFile()
 
 env.reset()
 

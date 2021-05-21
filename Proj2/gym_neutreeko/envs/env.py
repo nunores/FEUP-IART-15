@@ -8,9 +8,10 @@ class NeutreekoEnv(gym.Env):
     metadata = {'render.modes': ['human']}
 
     def __init__(self):
-        self.action_space = spaces.Discrete(8)
-        self.observation_space = spaces.Discrete(25)
-        #self.observation_space = spaces.Box(np.array([0, 0, 0, 0, 0]), np.array([2, 2, 2, 2, 2]), dtype = np.int)   
+        #self.action_space = spaces.Discrete(8)
+        #self.observation_space = spaces.Discrete(25)
+        self.action_space = spaces.Discrete(24)
+        self.observation_space = spaces.Box(np.array([0, 0, 0, 0, 0, 0]), np.array([4, 4, 4, 4, 4, 4]), dtype = np.int)   
         self.reset()
 
     def reset(self):
@@ -22,10 +23,12 @@ class NeutreekoEnv(gym.Env):
             observation (object): the initial observation.
         """
 
-        self.board = [[0, 0, 1, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, -1, 0, 0], [0, -1, 0, -1, 0]]
+        self.board = [[0, 1, 1, 1, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, -1, 0, 0], [0, -1, 0, -1, 0]]
         self.done = False
-        self.position = (2, 0) #TODO: Get position from board
-        return 0
+        self.position1 = (1, 0)
+        self.position2 = (2, 0)
+        self.position3 = (3, 0)
+        return tuple([1, 0, 2, 0, 3, 0])
 
     def step(self, action):
         """Run one timestep of the environment's dynamics. When end of episode is reached, you are responsible for calling 
@@ -42,19 +45,25 @@ class NeutreekoEnv(gym.Env):
         assert self.action_space.contains(action)
 
         if self.done:
-            return self.position[0] + self.position[1]*5, 0, True, None
+            return tuple([self.position1[0], self.position2[1], self.position2[0], self.position2[1], self.position3[0], self.position3[1]]), 0, True, None
 
         reward = -0.05
 
-        self.board = move(action, self.board, self.position[0], self.position[1])
-        self.position = updatePosition(self.board)
-        status = check_game_status(self.position)
+        
+        if (action < 8):
+            (self.board, self.position1) = move(action, self.board, self.position1[0], self.position1[1], self.position2[0], self.position2[1], self.position3[0], self.position3[1])
+        elif (action < 16):
+            (self.board, self.position2) = move(action, self.board, self.position1[0], self.position1[1], self.position2[0], self.position2[1], self.position3[0], self.position3[1])
+        else:
+            (self.board, self.position3) = move(action, self.board, self.position1[0], self.position1[1], self.position2[0], self.position2[1], self.position3[0], self.position3[1])
+
+        status = check_game_status(self.position1, self.position2, self.position3)
 
         if status == 1:
             self.done = True
             reward += 1
 
-        return self.position[0] + self.position[1]*5, reward, self.done, None
+        return tuple([self.position1[0], self.position2[1], self.position2[0], self.position2[1], self.position3[0], self.position3[1]]), reward, self.done, None
 
     def render(self, mode='human'):
         """Renders the environment.

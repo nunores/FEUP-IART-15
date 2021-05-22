@@ -1,15 +1,93 @@
 # Checks if is finished
-def check_game_status(position1, position2, position3):
-    if position1[0] == 1 and position1[1] == 3 and position2[0] == 2 and position2[1] == 2 and position3[0] == 3 and position3[1] == 3:
+# def check_game_status(position1, position2, position3):
+#     if position1[0] == 1 and position1[1] == 3 and position2[0] == 2 and position2[1] == 2 and position3[0] == 3 and position3[1] == 3:
+#         return 1
+#     return 0
+
+import random
+
+def generateBoard(board): #TODO: Prevent game over
+    position1 = (0, 0)
+    position2 = (0, 0)
+    position3 = (0, 0)
+    while(True):
+        temp = (random.randrange(0, 5), random.randrange(0, 5))
+        if (board[temp[1]][temp[0]] == 0):
+            break
+    position1 = temp
+    board[position1[1]][position1[0]] = 1
+    while(True):
+        temp = (random.randrange(0, 5), random.randrange(0, 5))
+        if (board[temp[1]][temp[0]] == 0):
+            break
+    position2 = temp
+    board[position2[1]][position2[0]] = 1
+    while(True):
+        temp = (random.randrange(0, 5), random.randrange(0, 5))
+        if (board[temp[1]][temp[0]] == 0):
+            break
+    position3 = temp
+    board[position3[1]][position3[0]] = 1
+    return board, position1, position2, position3
+
+
+# Checks if is finished
+def check_game_status(position, board):
+    if (checkLine(position, board) or checkCol(position, board) or checkDiagonals(position, board)):
         return 1
     return 0
 
+def checkLine(position, board):
+    if (board[position[1]][position[0]] != 1):
+        return False
+    # Look to the left
+    if(position[0] > 1 and board[position[1]][position[0]-1] == 1 and board[position[1]][position[0]-2] == 1):
+        return True
+    # Look to the right
+    if(position[0] < 3 and board[position[1]][position[0]+1] == 1 and board[position[1]][position[0]+2] == 1):
+        return True
+    # look to both sides    
+    if(position[0] > 0 and position[0] < 4 and board[position[1]][position[0]+1] == 1 and board[position[1]][position[0]-1] == 1):
+        return True
+    return False
 
-# def updatePosition(board, action):
-#     for i in range(5):
-#         for n in range(5):
-#             if board[i][n] == 1:
-#                 return (n, i)
+def checkCol(position, board):
+    if (board[position[1]][position[0]] != 1):
+        return False
+    # Look up
+    if(position[1] < 3 and board[position[1]+1][position[0]] == 1 and board[position[1]+2][position[0]] == 1):
+        return True
+    # Look down
+    if(position[1] > 1 and board[position[1]-1][position[0]] == 1 and board[position[1]-2][position[0]] == 1):
+        return True
+    # Look to both sides
+    if(position[1] > 0 and position[1] < 4 and board[position[1]+1][position[0]] == 1 and board[position[1]-1][position[0]] == 1):
+        return True
+    return False
+
+def checkDiagonals(position, board):
+    if (board[position[1]][position[0]] != 1):
+        return False
+    # Look down and left 
+    if (position[0] > 1 and position[1] > 1 and board[position[1]-1][position[0]-1] == 1 and board[position[1]-2][position[0]-2] == 1):
+        return True
+    # Look up and right
+    if (position[0] < 3 and position[1] < 3 and board[position[1]+1][position[0]+1] == 1 and board[position[1]+2][position[0]+2] == 1):
+        return True
+    # Look up right and down left (middle)
+    if (position[0] > 0 and position[0] < 4 and position[1] > 0 and position[1] < 4 and board[position[1]-1][position[0]-1] == 1 and board[position[1]+1][position[0]+1] == 1):
+        return True
+    # Look up and left
+    if (position[0] > 1 and position[1] < 3 and board[position[1]+1][position[0]-1] == 1 and board[position[1]+2][position[0]-2] == 1):
+        return True
+    # Look down and right
+    if (position[0] < 3 and position[1] > 1 and board[position[1]-1][position[0]+1] == 1 and board[position[1]-2][position[0]+2] == 1):
+        return True
+    # Look up left and down right (middle)
+    if (position[0] > 0 and position[0] < 4 and position[1] > 0 and position[1] < 4 and board[position[1]-1][position[0]+1] == 1 and board[position[1]+1][position[0]-1] == 1):
+        return True
+
+    return False
 
 # Matches actions to movements in board
 def move(action, board, x1, y1, x2, y2, x3, y3):

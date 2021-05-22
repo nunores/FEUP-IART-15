@@ -107,12 +107,13 @@ print ("Score/time: " +  str(sum(rewards)/total_episodes))
 print(epsilon)
 env.reset()
 
-for i in range (100):
+for i in range (25):
     print("------------------")
     action = np.argmax(qtable[state])
     new_state, reward, done, info = env.step(action)
     state = new_state
     env.render()
+    if(done) break
 
 
 writeToFile()

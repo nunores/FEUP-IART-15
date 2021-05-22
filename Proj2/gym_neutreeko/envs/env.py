@@ -23,12 +23,9 @@ class NeutreekoEnv(gym.Env):
             observation (object): the initial observation.
         """
 
-        self.board = [[0, 1, 1, 1, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, -1, 0, 0], [0, -1, 0, -1, 0]]
+        self.board, self.position1, self.position2, self.position3 = generateBoard([[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, -1, 0, 0], [0, -1, 0, -1, 0]])
         self.done = False
-        self.position1 = (1, 0)
-        self.position2 = (2, 0)
-        self.position3 = (3, 0)
-        return tuple([1, 0, 2, 0, 3, 0])
+        return tuple([self.position1[0], self.position1[1], self.position2[0], self.position2[1], self.position3[0], self.position3[1]])
 
     def step(self, action):
         """Run one timestep of the environment's dynamics. When end of episode is reached, you are responsible for calling 
@@ -57,7 +54,7 @@ class NeutreekoEnv(gym.Env):
         else:
             (self.board, self.position3) = move(action, self.board, self.position1[0], self.position1[1], self.position2[0], self.position2[1], self.position3[0], self.position3[1])
 
-        status = check_game_status(self.position1, self.position2, self.position3)
+        status = check_game_status(self.position1, self.board)
 
         if status == 1:
             self.done = True

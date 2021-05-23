@@ -3,10 +3,13 @@ import random
 import gym_neutreeko
 import gym
 import numpy as np
+import matplotlib.pyplot as plt
+from tqdm import tqdm
+
 np.set_printoptions(threshold=np.inf)
 
 def writeToFile():
-    f = open("temp.txt", "w")
+    f = open("base_agent_q_table.txt", "w")
     f.write(str(qtable))
     f.close()
 
@@ -24,10 +27,10 @@ state = env.observation_space
 
 # Hyperparameter Setup
 
-total_episodes = 20000
+total_episodes = 200000
 learning_rate = 0.8
 max_steps = 99
-gamma = 0.95
+gamma = 0.95 # 0 - current reward, 1 - strives for long-term rewards
 
 epsilon = 1.0
 max_epsilon = 1.0
@@ -36,7 +39,7 @@ decay_rate = 0.001
 
 rewards = []
 
-for episode in range(total_episodes):
+for episode in tqdm(range(total_episodes)):
     # Reset the environment
     state = env.reset()
     #print(state)
@@ -74,13 +77,13 @@ for episode in range(total_episodes):
 
         # Update Q(s,a):= Q(s,a) + lr [R(s,a) + gamma * max Q(s',a') - Q(s,a)]
         # qtable[new_state,:] : all the actions we can take from new state
-        ####qtable[state, action] = qtable[state, action] + learning_rate * (reward + gamma * np.max(qtable[new_state, :]) - qtable[state, action])
-        q_value = qtable[state][action]
+        qtable[state][action] = qtable[state][action] + learning_rate * (reward + gamma * np.max(qtable[new_state]) - qtable[state][action])
+        #q_value = qtable[state][action]
         #print(new_state)
-        best_q = np.max(qtable[new_state])
+        #best_q = np.max(qtable[new_state])
 
         # Q(state, action) <- (1 - a)Q(state, action) + a(reward + rmaxQ(next state, all actions))
-        qtable[state][action] = (1 - learning_rate) * q_value + learning_rate * (reward + gamma * best_q)
+        ##################qtable[state][action] = (1 - learning_rate) * q_value + learning_rate * (reward + gamma * best_q)
         #print(qtable[state, action])
 #         print(f'qtable: {qtable}')
         
@@ -107,13 +110,18 @@ print ("Score/time: " +  str(sum(rewards)/total_episodes))
 print(epsilon)
 env.reset()
 
-for i in range (25):
+# Matplotlib decidiu ser dog e não funcionar
+# plt.plot(rewards)
+# plt.show()
+
+
+for i in range (50):
     print("------------------")
     action = np.argmax(qtable[state])
     new_state, reward, done, info = env.step(action)
     state = new_state
     env.render()
-    if(done) break
+    if(done): break
 
 
 writeToFile()

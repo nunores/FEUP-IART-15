@@ -6,29 +6,44 @@
 
 import random
 
-def generateBoard(board): #TODO: Prevent game over
+# TODO: Acho que temos de trocar a cena da board, isto tá invertido. Ou seja, funciona, mas é uma confusão para ler
+
+def generateBoard(board):
     position1 = (0, 0)
     position2 = (0, 0)
     position3 = (0, 0)
-    while(True):
-        temp = (random.randrange(0, 5), random.randrange(0, 5))
-        if (board[temp[1]][temp[0]] == 0):
-            break
-    position1 = temp
+
+    position1 = generatePosition(board)
     board[position1[1]][position1[0]] = 1
-    while(True):
-        temp = (random.randrange(0, 5), random.randrange(0, 5))
-        if (board[temp[1]][temp[0]] == 0):
-            break
-    position2 = temp
+
+    position2 = generatePosition(board)
     board[position2[1]][position2[0]] = 1
+
+    position3 = generatePosition(board)
+    board[position3[1]][position3[0]] = 1
+
+
+    #TODO: Isto não se faz assim? Tou confuso 
+    # while(check_game_status(position1, board)):
+
+    #     position1 = generatePosition(board)
+    #     board[position1[1]][position1[0]] = 1
+
+    #     position2 = generatePosition(board)
+    #     board[position2[1]][position2[0]] = 1
+
+    #     position3 = generatePosition(board)
+    #     board[position3[1]][position3[0]] = 1
+
+    return board, position1, position2, position3
+
+def generatePosition(board):
     while(True):
         temp = (random.randrange(0, 5), random.randrange(0, 5))
         if (board[temp[1]][temp[0]] == 0):
             break
-    position3 = temp
-    board[position3[1]][position3[0]] = 1
-    return board, position1, position2, position3
+    position = temp
+    return position
 
 
 # Checks if is finished
@@ -215,3 +230,5 @@ def move_top_right(board, x, y):
         newBoard[y+1][x+1] = 1
         newBoard[y][x] = 0
         return move_top_right(newBoard, x+1, y+1)
+
+print(generateBoard([[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, -1, 0, 0], [0, -1, 0, -1, 0]]))

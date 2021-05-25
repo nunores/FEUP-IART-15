@@ -87,8 +87,18 @@ class NeutreekoEnv(gym.Env):
                 else:
                     super(MyEnv, self).render(mode=mode) # just raise an exception
         """
+        print("|-----|-----|-----|-----|-----|")
         for i in range(4, -1, -1):
-            print(self.board[i])
+            print("|", end='')
+            for n in range (5):
+                if (self.board[i][n] == 0):
+                    print("     |", end='')
+                elif (self.board[i][n] == 1):
+                    print("  X  |", end='')
+                elif (self.board[i][n] == -1):
+                    print("  O  |", end='')
+            print("")
+            print("|-----|-----|-----|-----|-----|")
  
     def close(self):
         """Performs any necessary cleanup.

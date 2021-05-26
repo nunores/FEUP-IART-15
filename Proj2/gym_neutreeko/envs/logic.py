@@ -1,12 +1,4 @@
-# Checks if is finished
-# def check_game_status(position1, position2, position3):
-#     if position1[0] == 1 and position1[1] == 3 and position2[0] == 2 and position2[1] == 2 and position3[0] == 3 and position3[1] == 3:
-#         return 1
-#     return 0
-
 import random
-
-# TODO: Acho que temos de trocar a cena da board, isto tá invertido. Ou seja, funciona, mas é uma confusão para ler
 
 def generateBoard(board):
     position1 = (0, 0)
@@ -21,19 +13,6 @@ def generateBoard(board):
 
     position3 = generatePosition(board)
     board[position3[1]][position3[0]] = 1
-
-
-    #TODO: Isto não se faz assim? Tou confuso 
-    # while(check_game_status(position1, board)):
-
-    #     position1 = generatePosition(board)
-    #     board[position1[1]][position1[0]] = 1
-
-    #     position2 = generatePosition(board)
-    #     board[position2[1]][position2[0]] = 1
-
-    #     position3 = generatePosition(board)
-    #     board[position3[1]][position3[0]] = 1
 
     return board, position1, position2, position3
 
@@ -230,5 +209,3 @@ def move_top_right(board, x, y):
         newBoard[y+1][x+1] = 1
         newBoard[y][x] = 0
         return move_top_right(newBoard, x+1, y+1)
-
-print(generateBoard([[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, -1, 0, 0], [0, -1, 0, -1, 0]]))
